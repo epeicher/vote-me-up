@@ -1,11 +1,12 @@
 import React from 'react'
+import {List, ListItem} from 'material-ui/List';
 
 export default (props) => {
   if(props.videos) {
     return(
-      <ol>
-      {props.videos.map((v,i) => <li key={i}>{v.name}</li>)}
-    </ol>)
+      <List>
+      {props.videos.map((v,i) => <ListItem key={i} primaryText={v.name}/>)}
+    </List>)
     }
     else {
       return <div>Loading...</div>
