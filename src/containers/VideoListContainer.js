@@ -5,12 +5,12 @@ import * as actions from '../redux/voteApp'
 
 class VideoListContainer extends Component {
 
-  componentWillMount() {
-    this.props.onLoad();
+  componentDidMount() {
+    this.props.getVotes();
   }
 
   render() {
-    return <VideoList videos={this.props.items} />
+    return <VideoList videos={this.props.items} onVoted={this.props.onVoted} />
   }
 }
 
@@ -18,8 +18,8 @@ export default connect(
   st => ({items : st.items}),
   dispatch => {
     return {
-      onVoted: (id) => dispatch(),
-      onLoad: () => dispatch(actions.getData())
+      onVoted: (id) => dispatch(actions.voteUp(id)),
+      getVotes: () => dispatch(actions.getVotes())
     }
   }
 )(VideoListContainer)

@@ -2,25 +2,20 @@ import * as api from '../api'
 import _ from 'lodash'
 
 const VOTING_UP = 'VOTING_UP'
-const VOTED = 'VOTED'
-const VOTING_DOWN = 'VOTING_DOWN'
-const INITIAL_LOAD = 'INITIAL_LOAD'
+const VOTES_UPDATED = 'VOTES_UPDATED'
+const ITEM_ADDED = 'ITEM_ADDED'
 
 export default function reducer(state = {}, action = {}) {
   switch (action.type) {
-    case INITIAL_LOAD:
-      return {items:_.orderBy(action.items,'votes','desc')};
+    case VOTES_UPDATED:
+      if(!action.items) return state;
+      return {items:action.items};
     case VOTING_UP:
-    case VOTING_DOWN:
       return {...state,voting : true}
-    case VOTED:
-      return {...state, voting : false}
+    case ITEM_ADDED:
+      return {...state, currentItemValue:''}
     default: return state;
   }
-}
-
-function voteUpApi(id) {
-  return api.voteUp(id);
 }
 
 function voteUpAction(id) {
@@ -30,26 +25,34 @@ function voteUpAction(id) {
   }
 }
 
-function votedAction() {
-  return {
-    type: VOTED
-  }
-}
-
 export function voteUp(id) {
   return (dispatch) => {
     dispatch(voteUpAction(id))
-    voteUpApi(id).then(() => dispatch(votedAction()))
+    api.voteUp(id).then(() => dispatch(votedAction()))
   }
 }
 
-function loadedAction(items) {
+function votedAction(items) {
   return {
-    type: INITIAL_LOAD,
+    type: VOTES_UPDATED,
     items
   }
 }
 
-export function getData() {
-  return dispatch => api.getInitialData().then(data => dispatch(loadedAction(data)))
+export function getVotes() {
+  return dispatch => 
+    api.getListOfItems(items => dispatch(votedAction(items)))
+}
+
+function addItemObject(item) {
+  return {
+    name: item,
+    votes: 0
+  }
+}
+
+export function addItem(name) {
+  return dispatch =>
+    api.addItem(addItemObject(name))
+      .then(dispatch({type:ITEM_ADDED}))
 }
