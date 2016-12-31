@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import VideoList from '../components/VideoList'
 import * as actions from '../redux/voteApp'
+import LinearProgress from 'material-ui/LinearProgress';
 
 class VideoListContainer extends Component {
 
@@ -10,7 +11,10 @@ class VideoListContainer extends Component {
   }
 
   render() {
-    return <VideoList videos={this.props.items} onVoted={this.props.onVoted} />
+    if(!this.props.items) return <LinearProgress mode="indeterminate" />
+    return <VideoList videos={this.props.items} 
+      onVoted={this.props.onVoted}
+      onDeleted={this.props.onDeleted} />
   }
 }
 
@@ -19,6 +23,7 @@ export default connect(
   dispatch => {
     return {
       onVoted: (id) => dispatch(actions.voteUp(id)),
+      onDeleted: (id) => dispatch(actions.deleteItem(id)),
       getVotes: () => dispatch(actions.getVotes())
     }
   }

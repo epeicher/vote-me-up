@@ -1,46 +1,42 @@
 import React from 'react'
-import {GridList, GridTile} from 'material-ui/GridList';
-import IconButton from 'material-ui/IconButton';
+import {List, ListItem} from 'material-ui/List';
+import Divider from 'material-ui/Divider';
 import StarBorder from 'material-ui/svg-icons/toggle/star-border';
+import Star from 'material-ui/svg-icons/toggle/star';
+import IconButton from 'material-ui/IconButton';
+import ContentClear from 'material-ui/svg-icons/content/clear';
+import {red500} from 'material-ui/styles/colors';
 
 const styles = {
-  root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-    flexDirection: 'column',
+  clearIcon: {
+    width: 26,
+    height: 26,
   },
-  gridList: {
-  },
-  titleStyle: {
-    color: 'rgb(0, 188, 212)',
-  },
-  cellStyle: {
-    textAlign: 'left',    
-    transition: 'all 0.5s',
-    transitionDelay: '1s',
-  },
-};
+  iconStyle: {
+    width: 40,
+    height: 40,
+    padding: 0,
+  }
+}
 
 export default (props) => {
-  
-  if(props.videos) {
-    return(
-      <div style={styles.root}>
-      <GridList style={styles.gridList} cols={1} cellHeight={60}>
-      {props.videos.map((v,i) => 
-        <GridTile key={i} title={v.name} style={styles.cellStyle}
-          subtitle={<span><b>{v.votes}</b> votes</span>}
-          actionIcon={<IconButton onClick={() => props.onVoted(v.id)}><StarBorder color="rgb(0, 188, 212)" /></IconButton>}
-          actionPosition='left'
-          titleBackground="linear-gradient(to top, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.25) 70%,rgba(0,0,0,0) 100%)"
-        >
-        </GridTile>
-      )}
-    </GridList>
-    </div>)
-    }
-    else {
-      return <div>Loading...</div>
-    }
+  return(
+    <List>
+    {props.videos.map((v,i) => 
+      <div key={i}>
+      <ListItem primaryText={v.name}
+        secondaryText={<span><b>{v.votes}</b> votes</span>}
+        leftIcon={<StarBorder />}
+        onClick={() => props.onVoted(v.id)}
+        rightIcon={<IconButton 
+          style={styles.iconStyle}
+          iconStyle={styles.clearIcon}
+          onClick={() => props.onDeleted(v.id)}>
+          <ContentClear hoverColor={red500}/></IconButton>}
+      >
+      </ListItem>
+      <Divider inset={true} />
+      </div>
+    )}
+  </List>)
 }

@@ -4,6 +4,7 @@ import _ from 'lodash'
 const VOTING_UP = 'VOTING_UP'
 const VOTES_UPDATED = 'VOTES_UPDATED'
 const ITEM_ADDED = 'ITEM_ADDED'
+const ITEM_DELETED = 'ITEM_DELETED'
 
 export default function reducer(state = {}, action = {}) {
   switch (action.type) {
@@ -25,23 +26,12 @@ function voteUpAction(id) {
   }
 }
 
-export function voteUp(id) {
-  return (dispatch) => {
-    dispatch(voteUpAction(id))
-    api.voteUp(id).then(() => dispatch(votedAction()))
-  }
-}
 
 function votedAction(items) {
   return {
     type: VOTES_UPDATED,
     items
   }
-}
-
-export function getVotes() {
-  return dispatch => 
-    api.getListOfItems(items => dispatch(votedAction(items)))
 }
 
 function addItemObject(item) {
@@ -51,8 +41,26 @@ function addItemObject(item) {
   }
 }
 
+export function getVotes() {
+  return dispatch => 
+    api.getListOfItems(items => dispatch(votedAction(items)))
+}
+
+export function voteUp(id) {
+  return (dispatch) => {
+    dispatch(voteUpAction(id))
+    api.voteUp(id).then(() => dispatch(votedAction()))
+  }
+}
+
 export function addItem(name) {
   return dispatch =>
     api.addItem(addItemObject(name))
       .then(dispatch({type:ITEM_ADDED}))
+}
+
+export function deleteItem(id) {
+    return dispatch =>
+    api.deleteItem(id)
+      .then(dispatch({type:ITEM_DELETED})) 
 }

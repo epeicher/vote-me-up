@@ -26,8 +26,8 @@ class AddItem extends Component {
 
   handleInput(e) {
     if(!(e.which === 13)) return;
-    if(!this.textInput.input.value) return;
-    this.props.onAddItem(this.textInput.input.value)
+    if(!this.state.currentValue) return;
+    this.props.onAddItem(this.state.currentValue)
     this.setState({currentValue: ''})
   }
 
@@ -35,9 +35,9 @@ class AddItem extends Component {
     return (
       <Toolbar style={styles.appBar} >
         <TextField style={styles.textInput} id='newItem' 
-          ref={(input) => {this.textInput = input;}}
           value={this.state.currentValue}
-          hintText='Add a new item'
+          hintText='Add a new item...'
+          underlineShow={false}
           onKeyDown={e => this.handleInput(e)}
           onChange={e => this.setState({currentValue: e.target.value})}
         />
