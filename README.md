@@ -1,1 +1,1 @@
-Vote a list of items and they will be automaticall sorted by Votes
+Vote a list of items and they will be automatically sorted by Votes
