@@ -83,7 +83,7 @@ export function voteUp(uid) {
     .transaction(item => {
       const user = firebase.auth().currentUser;
       if (item && user) {
-        item.votes = [].concat(user.uid);
+        item.votes = (item.votes || []).concat(user.uid);
       }
       return item;
     });
