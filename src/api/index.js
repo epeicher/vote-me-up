@@ -1,5 +1,5 @@
 import firebase from 'firebase'
-// import data from './data'
+//  import data from './data'
 
 const COLLECTION_NAME = 'lunch-learn'
 
@@ -13,7 +13,7 @@ export function initStorage() {
     messagingSenderId: "800375570860"
   };
   firebase.initializeApp(config);
-  //seed();
+  // seed();
 }
 
 // function seed() {
@@ -37,9 +37,10 @@ export function authenticateWithGoogle() {
   var provider = new firebase.auth.GoogleAuthProvider();
   firebase.auth().signInWithPopup(provider).then(function (result) {
     // This gives you a Google Access Token. You can use it to access the Google API.
-    var token = result.credential.accessToken;
+    //var token = result.credential.accessToken;
+
     // The signed-in user info.
-    var user = result.user;
+    //var user = result.user;
     // ...
   }).catch(function (error) {
     // Handle Errors here.
@@ -80,8 +81,9 @@ export function voteUp(uid) {
   return firebase.database().ref(COLLECTION_NAME)
     .child(uid)
     .transaction(item => {
-      if (item) {
-          item.votes++;
+      const user = firebase.auth().currentUser;
+      if (item && user) {
+        item.votes = [].concat(user.uid);
       }
       return item;
     });

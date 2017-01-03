@@ -1,5 +1,4 @@
 import * as api from '../api'
-import _ from 'lodash'
 
 const VOTING_UP = 'VOTING_UP'
 const VOTES_UPDATED = 'VOTES_UPDATED'
@@ -44,6 +43,13 @@ function addItemObject(item) {
     name: item,
     votes: 0
   }
+}
+
+export function getItemsSelector(state) {
+  if(state.items) {
+    return state.items.map(i => ({...i, voteNumber:i.votes?i.votes.length:0}))
+  }
+  return state.items;
 }
 
 export function getVotes() {

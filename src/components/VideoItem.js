@@ -6,6 +6,7 @@ import IconButton from 'material-ui/IconButton';
 import ContentClear from 'material-ui/svg-icons/content/clear';
 import { red500 } from 'material-ui/styles/colors';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import find from 'lodash/find'
 import './item.css'
 
 const styles = {
@@ -23,6 +24,13 @@ const styles = {
 
 export default class VideoItem extends React.Component {
 
+  getVoteIcon() {
+    const userId = this.props.user ? this.props.user.uid : undefined;
+    if(!userId) return <StarBorder />
+    if(!find(this.props.video.votes, v => v === userId)) return <StarBorder />
+    return <Star />
+  }
+
   render() {
     let props = this.props;
     let v = props.video;
@@ -34,8 +42,8 @@ export default class VideoItem extends React.Component {
         transitionLeave={false}>
         <ListItem primaryText={v.name}
           key={v.id}
-          secondaryText={<span><b>{v.votes}</b> votes</span>}
-          leftIcon={<StarBorder />}
+          secondaryText={<span><b>{v.voteNumber}</b> votes</span>}
+          leftIcon={this.getVoteIcon()}
           onClick={() => props.onVoted(v.id)}
           rightIcon={<IconButton
             style={styles.iconStyle}

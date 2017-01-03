@@ -37,5 +37,5 @@ class SignInBar extends React.Component {
 }
 
 export default connect(
-  st => ({user:st.user}))
-(SignInBar)
+  st => ({user:st.user})
+)(SignInBar)
