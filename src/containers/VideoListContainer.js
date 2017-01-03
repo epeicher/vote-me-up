@@ -22,7 +22,7 @@ class VideoListContainer extends Component {
 export default connect(
   st => (
     {
-      items: actions.getItemsSelector(st),
+      items: st.items,
       user: st.user,
     }
   ),

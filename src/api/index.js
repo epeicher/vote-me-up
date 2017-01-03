@@ -1,5 +1,4 @@
 import firebase from 'firebase'
-//  import data from './data'
 
 const COLLECTION_NAME = 'lunch-learn'
 
@@ -17,8 +16,9 @@ export function initStorage() {
 }
 
 // function seed() {
+//   const data = require('./data').default
 //   const ref = firebase.database().ref(COLLECTION_NAME);
-//   data.forEach(d=>ref.push(d));
+//   ref.remove().then(() =>data.forEach(d=>ref.push(d)));
 // }
 
 export function registerUserListener(cb) {
@@ -83,7 +83,8 @@ export function voteUp(uid) {
     .transaction(item => {
       const user = firebase.auth().currentUser;
       if (item && user) {
-        item.votes = (item.votes || []).concat(user.uid);
+        item.votes++;
+        item.votedBy = (item.votedBy || []).concat(user.uid);
       }
       return item;
     });

@@ -1,18 +1,18 @@
 export default [
   {
     name:"Angular",
-    votes:[]
+    votes:10
   },
   {
     name:"React",
-    votes:[]
+    votes:7
   },
   {
     name:"CQRS",
-    votes:[] 
+    votes:14 
   },
   {
     name:"Vue",
-    votes:[]
+    votes:11
   }
 ]

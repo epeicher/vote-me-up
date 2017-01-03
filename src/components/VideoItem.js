@@ -27,7 +27,7 @@ export default class VideoItem extends React.Component {
   getVoteIcon() {
     const userId = this.props.user ? this.props.user.uid : undefined;
     if(!userId) return <StarBorder />
-    if(!find(this.props.video.votes, v => v === userId)) return <StarBorder />
+    if(!find(this.props.video.votedBy, v => v === userId)) return <StarBorder />
     return <Star />
   }
 
@@ -42,7 +42,7 @@ export default class VideoItem extends React.Component {
         transitionLeave={false}>
         <ListItem primaryText={v.name}
           key={v.id}
-          secondaryText={<span><b>{v.voteNumber}</b> votes</span>}
+          secondaryText={<span><b>{v.votes}</b> votes</span>}
           leftIcon={this.getVoteIcon()}
           onClick={() => props.onVoted(v.id)}
           rightIcon={<IconButton
