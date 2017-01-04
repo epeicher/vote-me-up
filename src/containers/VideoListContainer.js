@@ -14,23 +14,15 @@ class VideoListContainer extends Component {
     if (!this.props.items) return <LinearProgress mode="indeterminate" />
     return <VideoList videos={this.props.items}
       user={this.props.user}
-      onVoted={this.props.onVoted}
-      onDeleted={this.props.onDeleted} />
+      onVoted={this.props.voteUp}
+      onDeleted={this.props.deleteItem} />
   }
 }
 
 export default connect(
-  st => (
-    {
-      items: st.items,
-      user: st.user,
-    }
-  ),
-  dispatch => {
-    return {
-      onVoted: (id) => dispatch(actions.voteUp(id)),
-      onDeleted: (id) => dispatch(actions.deleteItem(id)),
-      getVotes: () => dispatch(actions.getVotes())
-    }
-  }
+  st => ({
+    items: st.items,
+    user: st.user,
+  }),
+  actions
 )(VideoListContainer)
