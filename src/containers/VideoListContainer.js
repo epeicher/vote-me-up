@@ -11,17 +11,14 @@ class VideoListContainer extends Component {
   }
 
   render() {
-    if (!this.props.items) return <LinearProgress mode="indeterminate" />
-    return <VideoList videos={this.props.items}
-      user={this.props.user}
-      onVoted={this.props.voteUp}
-      onDeleted={this.props.deleteItem} />
+    if (!this.props.videos) return <LinearProgress mode="indeterminate" />
+    return <VideoList {...this.props} />
   }
 }
 
 export default connect(
   st => ({
-    items: st.items,
+    videos: st.items,
     user: st.user,
   }),
   actions

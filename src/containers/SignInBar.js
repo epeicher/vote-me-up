@@ -17,7 +17,7 @@ class SignInBar extends React.Component {
 
   getLabel() {
     if(this.props.user) return 'Sign Out'
-    return 'Sign In'
+    return 'Sign In with google'
   }
 
   getTitle() {

@@ -2,21 +2,27 @@ import React from 'react'
 import { ListItem } from 'material-ui/List';
 import StarBorder from 'material-ui/svg-icons/toggle/star-border';
 import Star from 'material-ui/svg-icons/toggle/star';
-import IconButton from 'material-ui/IconButton';
 import ContentClear from 'material-ui/svg-icons/content/clear';
-import { red500 } from 'material-ui/styles/colors';
+import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
+import { cyan500, red500, green500 } from 'material-ui/styles/colors';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import './item.css'
+import TextField from 'material-ui/TextField';
+import { Card } from 'material-ui/Card';
+
 
 const styles = {
-  clearIcon: {
-    width: 26,
-    height: 26,
+  icons: {
+    width: 60,
   },
-  iconStyle: {
-    width: 40,
-    height: 40,
-    padding: 0,
+  star: {
+    color: green500
+  },
+  textField: {
+    fontSize: '1.5em',
+    paddingLeft: '20px',
+    height: '68px',
+    width: '100%'
   }
 }
 
@@ -25,33 +31,57 @@ export default class VideoItem extends React.Component {
 
   getVoteIcon() {
     const userId = this.props.user ? this.props.user.uid : undefined;
-    if(!userId) return <StarBorder />
-    if(!this.props.video.votedBy || !this.props.video.votedBy[userId]) return <StarBorder />
-    return <Star />
+    if (!userId) return <StarBorder color={styles.star.color} />
+    if (!this.props.video.votedBy || !this.props.video.votedBy[userId]) return <StarBorder color={styles.star.color} />
+    return <Star color={styles.star.color} />
+  }
+
+  onEdit(e,id) {
+    e.stopPropagation();
+    this.props.editItem(id);
+  }
+
+  handleInput(e) {
+    const {id, editedValue} = this.props.video;
+    // esc
+    if(e.which === 27) this.props.cancelEditing(id);
+    // enter
+    if(e.which === 13) this.props.itemEdited(id, editedValue);
   }
 
   render() {
-    let props = this.props;
-    let v = props.video;
+    const {video, voteUp, changingItem, itemEdited, deleteItem} = this.props;
 
     return (
-      <ReactCSSTransitionGroup
-        transitionName="item"
-        transitionEnterTimeout={0}
-        transitionLeave={false}>
-        <ListItem primaryText={v.name}
-          key={v.id}
-          secondaryText={<span><b>{v.votes}</b> votes</span>}
-          leftIcon={this.getVoteIcon()}
-          onClick={() => props.onVoted(v.id)}
-          rightIcon={<IconButton
-            style={styles.iconStyle}
-            iconStyle={styles.clearIcon}
-            onClick={() => props.onDeleted(v.id)}>
-            <ContentClear hoverColor={red500} /></IconButton>}
-          >
-        </ListItem>
-      </ReactCSSTransitionGroup>)
+
+      <Card>
+        {!video.isEditing ?
+          <ReactCSSTransitionGroup
+            transitionName="item"
+            transitionEnterTimeout={0}
+            transitionLeave={false}>
+
+            <ListItem primaryText={video.name}
+              key={video.id}
+              secondaryText={<span><b>{video.votes}</b> votes</span>}
+              leftIcon={this.getVoteIcon()}
+              onClick={() => voteUp(video.id)}
+              rightIcon={<span style={styles.icons}>
+                <ModeEdit color={cyan500} 
+                  onClick={(e) => this.onEdit(e,video.id)} />
+                <ContentClear color={red500} onClick={() => deleteItem(video.id)} /></span>}
+              >
+            </ListItem>
+
+          </ReactCSSTransitionGroup>
+          :
+          <TextField id={video.id} value={video.editedValue}
+            style={styles.textField}
+            underlineShow={false}
+            onChange={e => changingItem(video.id, e.target.value)}
+            onKeyDown={e => this.handleInput(e)}
+            onBlur={() => itemEdited(video.id, video.editedValue)} />}
+      </Card>)
   }
 
 }

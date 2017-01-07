@@ -73,6 +73,12 @@ export function addItem(item) {
   return firebase.database().ref(COLLECTION_NAME).push(item)
 }
 
+export function updateItem(id, itemValue) {
+  return firebase.database().ref(COLLECTION_NAME)
+    .child(id)
+    .update({name:itemValue})
+}
+
 export function deleteItem(id) {
   return firebase.database().ref(COLLECTION_NAME).child(id).remove()
 }

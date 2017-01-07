@@ -1,9 +1,11 @@
 import * as api from '../api'
+import findIndex from 'lodash/findIndex'
 
 const VOTING_UP = 'VOTING_UP'
 const VOTES_UPDATED = 'VOTES_UPDATED'
 const ITEM_ADDED = 'ITEM_ADDED'
 const ITEM_DELETED = 'ITEM_DELETED'
+const ITEM_EDITING = 'ITEM_EDITING'
 const USER_LOGGED_IN = 'USER_LOGGED_IN'
 const USER_LOGGED_OUT = 'USER_LOGGED_OUT'
 
@@ -16,6 +18,16 @@ export default function reducer(state = {}, action = {}) {
       return {...state,voting : true}
     case ITEM_ADDED:
       return {...state, currentItemValue:''}
+    case ITEM_EDITING:
+      let itemIndex = findIndex(state.items, i => i.id === action.id)
+      if(itemIndex === -1) return state;
+      let item = state.items[itemIndex];
+      item.editedValue = action.itemValue || item.name;
+      item.isEditing = action.itemValue || action.isEditing;
+      const newItems = [...state.items.slice(0,itemIndex),
+          item,
+          ...state.items.slice(itemIndex+1)];
+      return {...state, items: newItems }
     case USER_LOGGED_IN:
     case USER_LOGGED_OUT:
       return {...state, user: action.user}
@@ -63,10 +75,29 @@ export function addItem(name) {
       .then(dispatch({type:ITEM_ADDED}))
 }
 
+export function editItem(id) {
+  return {type:ITEM_EDITING,id,isEditing:true}
+}
+
+export function itemEdited(id,value) {
+  return dispatch => {
+    dispatch({type:ITEM_EDITING, id, isEditing: false});
+    api.updateItem(id,value);
+  }
+}
+
+export function cancelEditing(id) {
+  return {type:ITEM_EDITING, id, isEditing:false}
+}
+
+export function changingItem(id,itemValue) {
+  return {type: ITEM_EDITING, id, itemValue }
+}
+
 export function deleteItem(id) {
     return dispatch =>
     api.deleteItem(id)
-      .then(dispatch({type:ITEM_DELETED})) 
+      .then(() => dispatch({type:ITEM_DELETED})) 
 }
 
 export function initStorage(d) {
