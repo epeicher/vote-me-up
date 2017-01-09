@@ -38,7 +38,14 @@ export default class VideoItem extends React.Component {
 
   onEdit(e,id) {
     e.stopPropagation();
+    if(!this.props.user) return this.props.userNotAllowedStarting();    
     this.props.editItem(id);
+  }
+
+  handleVote(e, id) {
+    if(!this.props.user) return this.props.userNotAllowedStarting();
+
+    this.props.voteUp(id)
   }
 
   handleInput(e) {
@@ -49,8 +56,15 @@ export default class VideoItem extends React.Component {
     if(e.which === 13) this.props.itemEdited(id, editedValue);
   }
 
+  handleDelete(e, id) {
+    e.stopPropagation();
+    if(!this.props.user) return this.props.userNotAllowedStarting();
+
+    this.props.deleteItem(id);
+  }
+
   render() {
-    const {video, voteUp, changingItem, itemEdited, deleteItem} = this.props;
+    const {video, changingItem, itemEdited} = this.props;
 
     return (
 
@@ -65,11 +79,11 @@ export default class VideoItem extends React.Component {
               key={video.id}
               secondaryText={<span><b>{video.votes}</b> votes</span>}
               leftIcon={this.getVoteIcon()}
-              onClick={() => voteUp(video.id)}
+              onClick={e => this.handleVote(e, video.id)}
               rightIcon={<span style={styles.icons}>
                 <ModeEdit color={cyan500} 
                   onClick={(e) => this.onEdit(e,video.id)} />
-                <ContentClear color={red500} onClick={() => deleteItem(video.id)} /></span>}
+                <ContentClear color={red500} onClick={e => this.handleDelete(e,video.id)} /></span>}
               >
             </ListItem>
 

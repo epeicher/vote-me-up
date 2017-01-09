@@ -8,6 +8,8 @@ const ITEM_DELETED = 'ITEM_DELETED'
 const ITEM_EDITING = 'ITEM_EDITING'
 const USER_LOGGED_IN = 'USER_LOGGED_IN'
 const USER_LOGGED_OUT = 'USER_LOGGED_OUT'
+const USER_NOT_ALLOWED_STARTING = 'USER_NOT_ALLOWED_STARTING'
+const USER_NOT_ALLOWED_ENDING = 'USER_NOT_ALLOWED_ENDING'
 
 export default function reducer(state = {}, action = {}) {
   switch (action.type) {
@@ -31,6 +33,10 @@ export default function reducer(state = {}, action = {}) {
     case USER_LOGGED_IN:
     case USER_LOGGED_OUT:
       return {...state, user: action.user}
+    case USER_NOT_ALLOWED_STARTING:
+      return {...state, displayNotAllowed:true}
+    case USER_NOT_ALLOWED_ENDING:
+      return {...state, displayNotAllowed:false}    
     default: return state;
   }
 }
@@ -95,7 +101,7 @@ export function changingItem(id,itemValue) {
 }
 
 export function deleteItem(id) {
-    return dispatch =>
+  return dispatch =>
     api.deleteItem(id)
       .then(() => dispatch({type:ITEM_DELETED})) 
 }
@@ -105,10 +111,18 @@ export function initStorage(d) {
   registerUserListener(d)
 }
 
+export function userNotAllowedStarting() {
+  return {type: USER_NOT_ALLOWED_STARTING};
+}
+
+export function userNotAllowedEnding() {
+  return {type: USER_NOT_ALLOWED_ENDING};
+}
+
 function registerUserListener(dispatch) {
   dispatch(d => {
     api.registerUserListener(user => {
-      if (!user) { d({ type: USER_LOGGED_OUT }) }
+      if (!user) { d({type: USER_LOGGED_OUT}) }
       else {
         d({ type: USER_LOGGED_IN, user })
       }

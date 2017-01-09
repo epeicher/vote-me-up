@@ -25,9 +25,10 @@ class AddItem extends Component {
   }
 
   handleInput(e) {
+    if(!this.props.user) return this.props.userNotAllowedStarting();
     if(!(e.which === 13)) return;
     if(!this.state.currentValue) return;
-    this.props.onAddItem(this.state.currentValue)
+    this.props.addItem(this.state.currentValue)
     this.setState({currentValue: ''})
   }
 
@@ -47,10 +48,6 @@ class AddItem extends Component {
 }
 
 export default connect(
-  undefined,
-  dispatch => {
-    return {
-      onAddItem: value => dispatch(actions.addItem(value))
-    }
-  }
+  st => ({user: st.user}),
+  actions
 )(AddItem)
