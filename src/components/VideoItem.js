@@ -56,11 +56,11 @@ export default class VideoItem extends React.Component {
     if(e.which === 13) this.props.itemEdited(id, editedValue);
   }
 
-  handleDelete(e, id) {
+  handleDelete(e, {id, name}) {
     e.stopPropagation();
     if(!this.props.user) return this.props.userNotAllowedStarting();
 
-    this.props.deleteItem(id);
+    this.props.deleteItem(id, name);
   }
 
   render() {
@@ -83,7 +83,7 @@ export default class VideoItem extends React.Component {
               rightIcon={<span style={styles.icons}>
                 <ModeEdit color={cyan500} 
                   onClick={(e) => this.onEdit(e,video.id)} />
-                <ContentClear color={red500} onClick={e => this.handleDelete(e,video.id)} /></span>}
+                <ContentClear color={red500} onClick={e => this.handleDelete(e,video)} /></span>}
               >
             </ListItem>
 
