@@ -10,7 +10,6 @@ import './item.css'
 import TextField from 'material-ui/TextField';
 import { Card } from 'material-ui/Card';
 
-
 const styles = {
   icons: {
     width: 60,
@@ -31,9 +30,12 @@ export default class VideoItem extends React.Component {
 
   getVoteIcon() {
     const userId = this.props.user ? this.props.user.uid : undefined;
-    if (!userId) return <StarBorder color={styles.star.color} />
-    if (!this.props.video.votedBy || !this.props.video.votedBy[userId]) return <StarBorder color={styles.star.color} />
-    return <Star color={styles.star.color} />
+    if (!userId || !this.props.video.votedBy || !this.props.video.votedBy[userId]) {
+      return <StarBorder color={styles.star.color} 
+        onClick={e => this.handleVote(e, this.props.video.id)} />
+    }
+    return <Star color={styles.star.color} 
+      onClick={e => this.handleVote(e, this.props.video.id)}  />
   }
 
   onEdit(e,id) {
@@ -79,7 +81,6 @@ export default class VideoItem extends React.Component {
               key={video.id}
               secondaryText={<span><b>{video.votes}</b> votes</span>}
               leftIcon={this.getVoteIcon()}
-              onClick={e => this.handleVote(e, video.id)}
               rightIcon={<span style={styles.icons}>
                 <ModeEdit color={cyan500} 
                   onClick={(e) => this.onEdit(e,video.id)} />
