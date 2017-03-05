@@ -9,6 +9,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import './item.css'
 import TextField from 'material-ui/TextField';
 import { Card } from 'material-ui/Card';
+import ItemText from './ItemText'
 
 const styles = {
   icons: {
@@ -77,7 +78,7 @@ export default class VideoItem extends React.Component {
             transitionEnterTimeout={0}
             transitionLeave={false}>
 
-            <ListItem primaryText={video.name}
+            <ListItem primaryText={<ItemText txt={video.name} />}
               key={video.id}
               secondaryText={<span><b>{video.votes}</b> votes</span>}
               leftIcon={this.getVoteIcon()}
