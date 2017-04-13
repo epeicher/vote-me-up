@@ -2,6 +2,7 @@ import * as api from '../api'
 import findIndex from 'lodash/findIndex'
 
 const VOTING_UP = 'VOTING_UP'
+const VIEWING = 'VIEWING'
 const VOTES_UPDATED = 'VOTES_UPDATED'
 const ITEM_ADDED = 'ITEM_ADDED'
 const ITEM_DELETED = 'ITEM_DELETED'
@@ -48,7 +49,6 @@ function voteUpAction(id) {
   }
 }
 
-
 function votedAction(items) {
   return {
     type: VOTES_UPDATED,
@@ -63,6 +63,13 @@ function addItemObject(item) {
   }
 }
 
+function viewedAction(id) {
+  return {
+    type: VIEWING,
+    id
+  }
+}
+
 export function getVotes() {
   return dispatch => 
     api.getListOfItems(items => dispatch(votedAction(items)))
@@ -72,6 +79,13 @@ export function voteUp(id) {
   return (dispatch) => {
     dispatch(voteUpAction(id))
     api.voteUp(id).then(() => dispatch(votedAction()))
+  }
+}
+
+export function viewed(id, viewed) {
+  return (dispatch) => {
+    dispatch(viewedAction(id))
+    api.viewed(id, viewed)
   }
 }
 

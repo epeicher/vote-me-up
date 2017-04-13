@@ -106,13 +106,28 @@ export function voteUp(uid) {
 
 
 export function getListOfItems(cb) {
-  
-  firebase.database().ref(COLLECTION_NAME)
-    .orderByChild('votes')
-    .on('value', sp => {
-      const results = [];
-      sp.forEach(v => { results.unshift({id:v.key,...v.val()}) })
-      cb(results);
-    })
+  const ref = firebase.database().ref(COLLECTION_NAME)
 
+  ref.orderByChild('votes')
+    .on('value', sp => {
+      const viewed = []
+      const nonViewed = []
+      
+      sp.forEach(v => { 
+        const item = {id:v.key, ...v.val()}
+        if(v.val().viewed) {
+          viewed.push(item);
+        } else {
+          nonViewed.push(item);
+        }
+       })
+       let orderedResult = [...nonViewed.reverse(), ...viewed.reverse()]
+       cb(orderedResult)
+    })
+}
+
+export function viewed(id, viewed) {
+  return firebase.database().ref(COLLECTION_NAME)
+    .child(id)
+    .update({viewed})
 }

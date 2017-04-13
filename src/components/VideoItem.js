@@ -3,6 +3,7 @@ import { ListItem } from 'material-ui/List';
 import StarBorder from 'material-ui/svg-icons/toggle/star-border';
 import Star from 'material-ui/svg-icons/toggle/star';
 import ContentClear from 'material-ui/svg-icons/content/clear';
+import Toggle from 'material-ui/Toggle';
 import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 import { cyan500, red500, green500 } from 'material-ui/styles/colors';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
@@ -13,7 +14,7 @@ import ItemText from './ItemText'
 
 const styles = {
   icons: {
-    width: 60,
+    width: 100,
   },
   star: {
     color: green500
@@ -23,6 +24,11 @@ const styles = {
     paddingLeft: '20px',
     height: '68px',
     width: '100%'
+  },
+  iconViewed : {
+    width: 40,
+    display: 'inline-block',
+    verticalAlign: 'top'
   }
 }
 
@@ -66,6 +72,12 @@ export default class VideoItem extends React.Component {
     this.props.deleteItem(id, name);
   }
 
+  handleViewed(e, viewed, id) {
+    if(!this.props.user) return this.props.userNotAllowedStarting();
+
+    this.props.viewed(id, viewed)
+  }
+
   render() {
     const {video, changingItem, itemEdited} = this.props;
 
@@ -82,10 +94,14 @@ export default class VideoItem extends React.Component {
               key={video.id}
               secondaryText={<span><b>{video.votes}</b> votes</span>}
               leftIcon={this.getVoteIcon()}
-              rightIcon={<span style={styles.icons}>
-                <ModeEdit color={cyan500} 
-                  onClick={(e) => this.onEdit(e,video.id)} />
-                <ContentClear color={red500} onClick={e => this.handleDelete(e,video)} /></span>}
+              rightIcon={
+                <span style={styles.icons}>
+                  <ModeEdit color={cyan500} 
+                    onClick={(e) => this.onEdit(e,video.id)} />
+                  <ContentClear color={red500} onClick={e => this.handleDelete(e,video)} />
+                  <Toggle style={styles.iconViewed} toggled={video.viewed}
+                    onToggle={(e,checked) => this.handleViewed(e, checked, video.id)} />
+                </span>}
               >
             </ListItem>
 
