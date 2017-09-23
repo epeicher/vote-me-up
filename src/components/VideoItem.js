@@ -5,7 +5,7 @@ import Star from 'material-ui/svg-icons/toggle/star';
 import ContentClear from 'material-ui/svg-icons/content/clear';
 import Toggle from 'material-ui/Toggle';
 import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
-import { cyan500, red500, green500 } from 'material-ui/styles/colors';
+import { cyan500, red500, green500, grey200 } from 'material-ui/styles/colors';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import './item.css'
 import TextField from 'material-ui/TextField';
@@ -13,6 +13,10 @@ import { Card } from 'material-ui/Card';
 import ItemText from './ItemText'
 
 const styles = {
+  viewed: {
+    backgroundColor: grey200,    
+    textDecoration: "line-through",
+  },
   icons: {
     width: 100,
   },
@@ -91,6 +95,7 @@ export default class VideoItem extends React.Component {
             transitionLeave={false}>
 
             <ListItem primaryText={<ItemText txt={video.name} />}
+              style={video.viewed ? styles.viewed : {}}
               key={video.id}
               secondaryText={<span><b>{video.votes}</b> votes</span>}
               leftIcon={this.getVoteIcon()}
