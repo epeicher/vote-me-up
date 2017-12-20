@@ -14,6 +14,7 @@ class VideoListContainer extends Component {
 
   componentDidMount() {
     const list = this.props.match.params.list;
+    console.log('the list is', list);
     this.props.getVotes(list);
   }
 
