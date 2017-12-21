@@ -1,10 +1,9 @@
 // Coloque su configuración en este archivo para sobrescribir la configuración predeterminada y de usuario.
 {
-  "editor.tabSize": 2,
-  "search.exclude": {
-    "**/node_modules": true,
-    "**/bower_components": true,
-    "**/build": true
-  },
-  "editor.formatOnSave": true
+    "editor.tabSize": 2,
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/build": true
+    }
 }
