@@ -8,3 +8,16 @@
   transition: opacity 1000ms cubic-bezier(0.680, -0.550, 0.265, 1.550);
 }
 
+a, a:visited {
+  color: grey;
+}
+
+.ellipses {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.hide {
+  display: none !important;
+}

@@ -1,27 +1,22 @@
 import React from 'react'
-import { ListItem } from 'material-ui/List';
-import StarBorder from 'material-ui/svg-icons/toggle/star-border';
-import Star from 'material-ui/svg-icons/toggle/star';
-import ContentClear from 'material-ui/svg-icons/content/clear';
-import Toggle from 'material-ui/Toggle';
-import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
-import { cyan500, red500, green500, grey200 } from 'material-ui/styles/colors';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import Star from '@material-ui/icons/Star';
+import StarBorder from '@material-ui/icons/StarBorder';
 import './item.css'
-import TextField from 'material-ui/TextField';
-import { Card } from 'material-ui/Card';
-import ItemText from './ItemText'
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import Avatar from '@material-ui/core/Avatar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import CheckBoxIcon from '@material-ui/icons/CheckBox'
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
 
 const styles = {
   viewed: {
-    backgroundColor: grey200,    
-    textDecoration: "line-through",
-  },
-  icons: {
-    width: 100,
-  },
-  star: {
-    color: green500
+    backgroundColor: 'lightgrey'
   },
   textField: {
     fontSize: '1.5em',
@@ -33,20 +28,25 @@ const styles = {
     width: 40,
     display: 'inline-block',
     verticalAlign: 'top'
+  },
+  actions: {
+    display: 'flex'
+  },
+  cardContent: {
+    root: {
+      paddingTop: 0
+    }
   }
 }
-
 
 export default class VideoItem extends React.Component {
 
   getVoteIcon() {
     const userId = this.props.user ? this.props.user.uid : undefined;
-    if (!userId || !this.props.video.votedBy || !this.props.video.votedBy[userId]) {
-      return <StarBorder color={styles.star.color} 
-        onClick={e => this.handleVote(e, this.props.video.id)} />
-    }
-    return <Star color={styles.star.color} 
-      onClick={e => this.handleVote(e, this.props.video.id)}  />
+    
+    return (!userId || !this.props.video.votedBy || !this.props.video.votedBy[userId])
+      ? <StarBorder color="primary" onClick={e => this.handleVote(e, this.props.video.id)} />
+      : <Star color="primary" onClick={e => this.handleVote(e, this.props.video.id)} />
   }
 
   onEdit(e,id) {
@@ -69,56 +69,67 @@ export default class VideoItem extends React.Component {
     if(e.which === 13) this.props.itemEdited(id, editedValue);
   }
 
-  handleDelete(e, {id, name}) {
+  handleDelete(e, {id, title}) {
     e.stopPropagation();
     if(!this.props.user) return this.props.userNotAllowedStarting();
 
-    this.props.deleteItem(id, name);
+    this.props.deleteItem(id, title);
+  }
+
+  handleEdit(e, {id, link, title}) {
+    e.stopPropagation();
+    if(!this.props.user) return this.props.userNotAllowedStarting();
+
+    this.props.editItem(id, link, title);
   }
 
   handleViewed(e, viewed, id) {
     if(!this.props.user) return this.props.userNotAllowedStarting();
-
     this.props.viewed(id, viewed)
   }
 
   render() {
-    const {video, changingItem, itemEdited} = this.props;
+    const { video } = this.props;
 
     return (
-
-      <Card>
-        {!video.isEditing ?
-          <ReactCSSTransitionGroup
-            transitionName="item"
-            transitionEnterTimeout={0}
-            transitionLeave={false}>
-
-            <ListItem primaryText={<ItemText txt={video.name} />}
-              style={video.viewed ? styles.viewed : {}}
-              key={video.id}
-              secondaryText={<span><b>{video.votes}</b> votes</span>}
-              leftIcon={this.getVoteIcon()}
-              rightIcon={
-                <span style={styles.icons}>
-                  <ModeEdit color={cyan500} 
-                    onClick={(e) => this.onEdit(e,video.id)} />
-                  <ContentClear color={red500} onClick={e => this.handleDelete(e,video)} />
-                  <Toggle style={styles.iconViewed} toggled={video.viewed}
-                    onToggle={(e,checked) => this.handleViewed(e, checked, video.id)} />
-                </span>}
-              >
-            </ListItem>
-
-          </ReactCSSTransitionGroup>
-          :
-          <TextField id={video.id} value={video.editedValue}
-            style={styles.textField}
-            underlineShow={false}
-            onChange={e => changingItem(video.id, e.target.value)}
-            onKeyDown={e => this.handleInput(e)}
-            onBlur={() => itemEdited(video.id, video.editedValue)} />}
-      </Card>)
+      <Card style={video.viewed ? styles.viewed : {}}>
+        <CardHeader
+          avatar={
+            <Avatar>
+              {video.votes || "0"}
+            </Avatar>
+          }
+          title={video.title}
+          //subheader="September 2018"   <-- NICE TO HAVE!
+        />
+        <CardContent style={{paddingTop: 0, paddingBottom: 5, marginLeft: 58}}>
+          <Typography color="textSecondary" className="ellipses">
+            <a href={video.link} target="blank">{video.link}</a>
+          </Typography>
+        </CardContent>
+        <CardActions disableActionSpacing className={this.props.user ? '' : 'hide' }>
+          <IconButton style={{ marginLeft: 8 }}>
+            {this.getVoteIcon()}
+          </IconButton>
+          <div style={{marginLeft: 'auto', marginRight: 8}}>
+            <IconButton>
+              <EditIcon onClick={e => this.handleEdit(e, video)} />
+            </IconButton>
+            <IconButton>
+              <DeleteIcon onClick={e => this.handleDelete(e, video)} />
+            </IconButton>
+            {(video.viewed) ?
+              <IconButton aria-label="Mark as not viewed">
+                <CheckBoxIcon onClick={e => this.handleViewed(e, false, video.id)} />
+              </IconButton>
+              :
+              <IconButton aria-label="Mark as viewed">
+                <CheckBoxOutlineBlankIcon onClick={e => this.handleViewed(e, true, video.id)} />
+              </IconButton>
+            }
+            </div>
+        </CardActions>
+      </Card>
+    )
   }
-
 }

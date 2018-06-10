@@ -113,8 +113,24 @@ export function getListOfItems(cb) {
       const viewed = []
       const nonViewed = []
       
+      const setTitleAndLink = (item) => {
+        const separator = ' - ';
+        const separatorIndex = item.name.indexOf(separator);
+
+        if (separatorIndex !== -1) {
+          const split = item.name.split(separator);
+          item.title = split[1];
+          item.link = split[0];
+        } else {
+          item.title = item.name;
+          item.link = item.name;
+        }
+      }
+      
       sp.forEach(v => { 
         const item = {id:v.key, ...v.val()}
+        setTitleAndLink(item);
+
         if(v.val().viewed) {
           viewed.push(item);
         } else {
