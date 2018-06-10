@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import * as actions from '../redux/voteApp'
-import {Toolbar} from 'material-ui/Toolbar';
-import TextField from 'material-ui/TextField';
+import Toolbar from '@material-ui/core/Toolbar';
+import TextField from '@material-ui/core/TextField';
 
 const styles = { 
   appBar : {
@@ -37,8 +37,8 @@ class AddItem extends Component {
       <Toolbar style={styles.appBar} >
         <TextField style={styles.textInput} id='newItem' 
           value={this.state.currentValue}
-          hintText='Add a new item...'
-          underlineShow={false}
+          placeholder='Add new item as "link - title"...'
+          InputProps={{disableUnderline: true}}
           onKeyDown={e => this.handleInput(e)}
           onChange={e => this.setState({currentValue: e.target.value})}
         />
